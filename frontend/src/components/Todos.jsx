@@ -1,56 +1,28 @@
-import React, {useContext, useEffect, useState} from "react";
+import React, { useEffect, useState} from "react";
 import {
     Input,
     InputGroup,
     Stack,
 } from "@chakra-ui/react"
+import axios from "axios";
 
-const TodoContext = React.createContext({
+const TodosContext = React.createContext({
     todos: [], fetchTodos: () => {}
 })
 
-export default function Todos() {
-    const [todos, setTodos] = useState([])
-    const fetchTodos = async () => {
-        const response = await fetch("http://localhost:8000/todo")
-        const todos = await response.json()
-        setTodos(todos.data)
-    }
-    useEffect(() => {
-        fetchTodos()
-    }, [])
-    return (
-        <TodoContext.Provider value={{todos, fetchTodos}}>
-            <AddTodo />
-            <Stack spacing={5} className="p-2">
-                {todos.map((todo) => (
-                    <b>{todo.item}</b>
-                ))}
-            </Stack>
-        </TodoContext.Provider>
-    )
-}
-
 const AddTodo = () => {
     const [item, setItem] = React.useState("")
-    const {todos, fetchTodos} = React.useContext(TodoContext)
+    const {todos, fetchTodos} = React.useContext(TodosContext)
 
     const handleInput = event => {
         setItem(event.target.value)
     }
 
     const handleSubmit = (event) => {
-        const newTodo = {
+        axios.post("http://localhost:8000/todo", {
             "id": todos.length + 1,
-            "item": item
-        }
-
-        fetch("http://localhost:8000/todo", {
-            method: "POST",
-            headers: {"Content-Type": "application/json"},
-            body: JSON.stringify(newTodo)
-        })
-            .then(fetchTodos)
+            "item": (item)
+        }).then("Réussi")
 
     }
 
@@ -69,4 +41,25 @@ const AddTodo = () => {
     )
 }
 
+export default function Todos() {
+    const [todos, setTodos] = useState([])
+    const fetchTodos = async () => {
+        const response = await fetch("http://localhost:8000/todo")
+        const todos = await response.json()
+        setTodos(todos.data)
+    }
+    useEffect(() => {
+        fetchTodos().then()
+    }, [])
+    return (
+        <TodosContext.Provider value={{todos, fetchTodos}}>
+            <AddTodo />
+            <Stack spacing={5} className="p-2">
+                {todos.map((todo, key) => (
+                    <b key={key}>{todo.item}</b>
+                ))}
+            </Stack>
+        </TodosContext.Provider>
+    )
+}
 

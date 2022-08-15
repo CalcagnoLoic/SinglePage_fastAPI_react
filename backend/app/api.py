@@ -1,7 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-
 todos = [
     {
         "id": "1",
@@ -13,12 +12,11 @@ todos = [
     }
 ]
 
-
 app = FastAPI()
 
 origins = [
+    "http://localhost:3000",
     "localhost:3000"
-    "http://localhost:3000"
 ]
 
 app.add_middleware(
@@ -40,7 +38,9 @@ async def get_todos() -> dict:
     return {"data": todos}
 
 
-@app.post("/todo", status_code=201, tags=["todos"])
+@app.post("/todo", tags=["todos"])
 async def add_todo(todo: dict) -> dict:
     todos.append(todo)
-    return {"data": {"Todo added."}}
+    return {
+        "data": {"Todo added."}
+    }
