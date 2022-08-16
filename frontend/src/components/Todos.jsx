@@ -91,6 +91,26 @@ const UpdateTodo = ({item, id}) => {
     )
 }
 
+//////////////////////////////////////////
+///////////Suppression d'un objet de l'API
+
+const DeleteTodo = ({id}) => {
+    const {fetchTodos} = React.useContext(TodosContext)
+
+    const deleteTodo = async () => {
+        await fetch(`http://localhost:8000/todo/${id}`, {
+            method: "DELETE",
+            headers: {"Content-Type": "application/json"},
+            body: {"id": id}
+        })
+        await fetchTodos()
+    }
+
+    return (
+        <Button onclick={deleteTodo}>Delete Todo</Button>
+    )
+}
+
 const TodoHelper = ({item, id, fetchTodos}) => {
     return (
         <Box>
@@ -99,6 +119,7 @@ const TodoHelper = ({item, id, fetchTodos}) => {
                     {item}
                     <Flex>
                         <UpdateTodo item={item} id={id} fetchTodos={fetchTodos} />
+                        <DeleteTodo id={id} fetchTodos={fetchTodos} />
                     </Flex>
                 </Text>
             </Flex>
