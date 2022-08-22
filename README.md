@@ -1,4 +1,4 @@
-# SinglePage_fastAPI_react
+# Todo list
 
 Création d'une application à page unique via fastAPI et React. 
 
